@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <script>
+        // Check if user is logged in
+        function checkUserLogin() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                window.location.href = 'landing.html';
+            }
+        }
+        checkUserLogin();
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: url('pexels-packermann-1666021.jpg') center/cover fixed;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            margin: 0;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+            padding-bottom: 30px;
+        }
+
+        /* Header Card - iOS Glass Effect */
+        .header-card {
+            width: 85%;
+            max-width: 400px;
+            padding: 20px 25px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-top: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .header-content {
+            flex: 1;
+        }
+
+        .logout-btn {
+            padding: 8px 12px;
+            background: rgba(255, 59, 48, 0.6);
+            color: white;
+            border: 1px solid rgba(255, 59, 48, 0.8);
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .logout-btn:active {
+            background: rgba(255, 59, 48, 0.8);
+            transform: scale(0.95);
+        }
+
+        .profile-avatar {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-avatar:active {
+            transform: scale(0.95);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Menu Popup */
+        .menu-popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            z-index: 99;
+        }
+
+        .menu-popup-overlay.active {
+            display: block;
+        }
+
+        .menu-popup {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+            z-index: 100;
+            min-width: 200px;
+            overflow: hidden;
+            animation: slideIn 0.3s ease;
+            display: none;
+        }
+
+        .menu-popup.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .menu-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .menu-header-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .menu-header-text {
+            flex: 1;
+        }
+
+        .menu-header-username {
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 2px;
+        }
+
+        .menu-header-email {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .menu-items {
+            padding: 10px 0;
+        }
+
+        .menu-item {
+            padding: 12px 20px;
+            color: white;
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .menu-item:active {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .menu-item.logout {
+            color: #ff3b30;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header-greeting {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .header-datetime {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+        }
+
+        /* Location Info Card - iOS Glass Effect */
+        .location-card {
+            width: 85%;
+            max-width: 420px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .location-info {
+            background: transparent;
+            padding: 0;
+            border-radius: 0;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.5;
+        }
+
+        .location-button {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.25);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .location-button:active {
+            background: rgba(255, 255, 255, 0.35);
+            transform: scale(0.98);
+        }
+
+        /* Distance Result Card - iOS Glass Effect */
+        .distance-result {
+            flex: 1 1 calc(50% - 6px);
+            min-width: calc(50% - 6px);
+            padding: 15px 18px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+            display: none;
+            position: relative;
+        }
+
+        .distance-result.show {
+            display: block;
+        }
+
+        .distance-results-container {
+            width: 85%;
+            max-width: 900px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        /* When only one card is showing, make it full width */
+        .distance-results-container .distance-result.show:nth-child(1):last-of-type {
+            flex: 1 1 100%;
+            min-width: 100%;
+        }
+        
+        .distance-results-container .distance-result.show:nth-child(2):last-of-type {
+            flex: 1 1 100%;
+            min-width: 100%;
+        }
+
+        .distance-result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .distance-result h3 {
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .result-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            padding: 0;
+        }
+
+        .result-close:active {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(0.95);
+        }
+
+        .distance-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 6px;
+        }
+
+        .distance-info {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+
+        .result-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .result-buttons button {
+            flex: 1;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .result-buttons button:active {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(0.98);
+        }
+
+        /* Set Destination Section */
+        .destination-section {
+            width: 85%;
+            max-width: 420px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        .section-title::after {
+            content: '▼';
+            font-size: 12px;
+            transition: transform 0.3s;
+        }
+
+        .section-title.collapsed::after {
+            transform: rotate(-90deg);
+        }
+
+        .section-content {
+            max-height: 500px;
+            overflow: hidden;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            opacity: 1;
+        }
+
+        .section-content.collapsed {
+            max-height: 0;
+            opacity: 0;
+        }
+
+        .input-wrapper {
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .input-label {
+            display: block;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 12px;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            color: white;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        select {
+            cursor: pointer;
+            color: white;
+        }
+
+        select option {
+            background: #667eea;
+            color: white;
+        }
+
+        #suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            border-radius: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            z-index: 100;
+            margin-top: 5px;
+            backdrop-filter: blur(10px);
+        }
+
+        #suggestions div {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            color: #333;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        #suggestions div:last-child {
+            border-bottom: none;
+        }
+
+        #suggestions div:active {
+            background: rgba(102, 126, 234, 0.15);
+        }
+
+        .button-calculate {
+            width: 100%;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.25);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .button-calculate:active {
+            background: rgba(255, 255, 255, 0.35);
+            transform: scale(0.98);
+        }
+
+        /* Friends Section */
+        .friends-section {
+            width: 85%;
+            max-width: 420px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .add-friend-wrapper {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .add-friend-wrapper input {
+            flex: 1;
+            padding: 12px 15px;
+            min-width: 0;
+        }
+
+        .add-friend-btn {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .add-friend-btn:active {
+            background: rgba(255, 255, 255, 0.35);
+            transform: scale(0.98);
+        }
+
+        .friends-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .friend-card {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .friend-card:active {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(0.98);
+        }
+
+        .friend-avatar {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            margin: 0 auto 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            font-size: 18px;
+        }
+
+        .friend-name {
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            word-break: break-word;
+        }
+
+        .friend-phone {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 11px;
+        }
+
+        .friend-remove {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255, 59, 48, 0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .friend-card:hover .friend-remove {
+            display: flex;
+        }
+
+        .friend-remove:active {
+            background: rgba(255, 59, 48, 0.9);
+            transform: scale(0.9);
+        }
+
+        .empty-friends {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 13px;
+            padding: 20px;
+            grid-column: 1 / -1;
+        }
+
+        .loading {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-text {
+            color: #ff3b30;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        /* Task List Section */
+        .tasks-section {
+            width: 85%;
+            max-width: 420px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .add-task-wrapper {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .add-task-wrapper input {
+            flex: 1;
+            padding: 12px 15px;
+            min-width: 0;
+        }
+
+        .add-task-btn {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .add-task-btn:active {
+            background: rgba(255, 255, 255, 0.35);
+            transform: scale(0.98);
+        }
+
+        .tasks-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .task-item {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+        }
+
+        .task-item.done {
+            opacity: 0.6;
+        }
+
+        .task-item.done .task-text {
+            text-decoration: line-through;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #4ade80;
+        }
+
+        .task-text {
+            flex: 1;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            word-break: break-word;
+        }
+
+        .task-remove {
+            background: rgba(255, 59, 48, 0.7);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            width: 24px;
+            height: 24px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .task-remove:active {
+            background: rgba(255, 59, 48, 0.9);
+            transform: scale(0.9);
+        }
+
+        .empty-tasks {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 13px;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Card -->
+        <div class="header-card">
+            <div class="header-content">
+                <div class="header-greeting">Hello</div>
+                <div class="header-datetime" id="dateTime"></div>
+            </div>
+            <div class="profile-avatar" id="profileAvatar" onclick="toggleMenuPopup()"></div>
+        </div>
+
+        <!-- Menu Popup -->
+        <div class="menu-popup-overlay" id="menuOverlay" onclick="closeMenuPopup()"></div>
+        <div class="menu-popup" id="menuPopup">
+            <div class="menu-header">
+                <div class="menu-header-avatar" id="menuAvatar"></div>
+                <div class="menu-header-text">
+                    <div class="menu-header-username" id="menuUsername"></div>
+                    <div class="menu-header-email" id="menuEmail"></div>
+                </div>
+            </div>
+            <div class="menu-items">
+                <button class="menu-item" onclick="navigateToChat()">
+                    <span>💬</span> Go to Chat
+                </button>
+                <button class="menu-item logout" onclick="handleLogout()">
+                    <span>🚪</span> Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Distance Result Card -->
+        <!-- Distance Results Container - Can show up to 2 cards -->
+        <div class="distance-results-container" id="distanceResultsContainer">
+            <div class="distance-result" id="distanceCard1">
+                <div class="distance-result-header">
+                    <h3>Distance 1</h3>
+                    <button class="result-close" onclick="closeDistanceCard(1)">✕</button>
+                </div>
+                <div class="distance-value" id="distanceValue1">-</div>
+                <div class="distance-info" id="distanceInfo1"></div>
+                <div class="result-buttons">
+                    <button onclick="recalculateDistance(1)">Update</button>
+                </div>
+            </div>
+
+            <div class="distance-result" id="distanceCard2">
+                <div class="distance-result-header">
+                    <h3>Distance 2</h3>
+                    <button class="result-close" onclick="closeDistanceCard(2)">✕</button>
+                </div>
+                <div class="distance-value" id="distanceValue2">-</div>
+                <div class="distance-info" id="distanceInfo2"></div>
+                <div class="result-buttons">
+                    <button onclick="recalculateDistance(2)">Update</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Set Destination Section -->
+        <div class="destination-section">
+            <div class="section-title collapsed" onclick="toggleDestinationSection()">Set Destination</div>
+            
+            <div class="section-content collapsed" id="destinationContent">
+                <div class="input-wrapper">
+                    <label class="input-label">Destination Place</label>
+                    <input type="text" id="destinationPlace" placeholder="Search place..." autocomplete="off">
+                    <div id="suggestions"></div>
+                </div>
+
+                <button class="button-calculate" onclick="calculateDistance()">Calculate Distance</button>
+            </div>
+        </div>
+
+        <!-- Friends Section -->
+        <div class="friends-section">
+            <div class="section-title">Friends</div>
+            
+            <div class="add-friend-wrapper">
+                <input type="text" id="friendName" placeholder="Friend name" />
+                <input type="text" id="friendPhone" placeholder="Phone number" />
+                <button class="add-friend-btn" onclick="addFriend()">Add</button>
+            </div>
+
+            <div class="friends-grid" id="friendsGrid">
+                <div class="empty-friends">No friends yet</div>
+            </div>
+        </div>
+
+        <!-- Task List Section -->
+        <div class="tasks-section">
+            <div class="section-title">Tasks</div>
+            
+            <div class="add-task-wrapper">
+                <input type="text" id="taskInput" placeholder="Add new task..." />
+                <button class="add-task-btn" onclick="addTask()">Add</button>
+            </div>
+
+            <div class="tasks-list" id="tasksList">
+                <div class="empty-tasks">No tasks yet</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentLat = null;
+        let currentLon = null;
+        let debounceTimer;
+        let friends = JSON.parse(localStorage.getItem('friends')) || [];
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+        // Detect image brightness and adjust text color
+        function adjustTextColorForBackground() {
+            const img = new Image();
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+                
+                const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imageData.data;
+                
+                let brightness = 0;
+                for (let i = 0; i < data.length; i += 4) {
+                    const r = data[i];
+                    const g = data[i + 1];
+                    const b = data[i + 2];
+                    brightness += (r * 299 + g * 587 + b * 114) / 1000;
+                }
+                brightness /= (data.length / 4);
+                
+                // Adjust overlay opacity based on brightness
+                const overlayOpacity = brightness > 128 ? 0.5 : 0.3;
+                const style = document.createElement('style');
+                style.textContent = `body::before { background: rgba(0, 0, 0, ${overlayOpacity}) !important; }`;
+                document.head.appendChild(style);
+                
+                // Use lighter text for dark backgrounds, darker text for light backgrounds
+                const isDarkBackground = brightness < 100;
+                const textStyle = document.createElement('style');
+                if (isDarkBackground) {
+                    textStyle.textContent = `
+                        .header-greeting, .header-datetime, .section-title, .input-label, 
+                        .friend-name, .friend-phone, .distance-value, .distance-info, 
+                        .result-buttons button, .button-calculate {
+                            color: #ffffff !important;
+                        }
+                    `;
+                } else {
+                    textStyle.textContent = `
+                        .header-greeting, .header-datetime, .section-title, .input-label, 
+                        .friend-name, .friend-phone, .distance-value, .distance-info,
+                        .result-buttons button, .button-calculate {
+                            color: #1a1a1a !important;
+                        }
+                    `;
+                }
+                document.head.appendChild(textStyle);
+            };
+            img.src = 'pexels-packermann-1666021.jpg';
+        }
+
+        // Call on page load
+        window.addEventListener('load', adjustTextColorForBackground);
+
+        // Toggle destination section
+        function toggleDestinationSection() {
+            const content = document.getElementById('destinationContent');
+            const title = document.querySelector('.destination-section .section-title');
+            
+            content.classList.toggle('collapsed');
+            title.classList.toggle('collapsed');
+        }
+
+        // Update date/time
+        function updateDateTime() {
+            const now = new Date();
+            const options = { weekday: 'short', month: 'short', day: 'numeric' };
+            const dateStr = now.toLocaleDateString('en-US', options);
+            const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('dateTime').textContent = `${timeStr} • ${dateStr}`;
+        }
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+
+        function getCurrentLocation() {
+            const locationInfo = document.getElementById('locationInfo');
+            
+            if (!navigator.geolocation) {
+                locationInfo.textContent = '❌ Geolocation not supported';
+                return;
+            }
+
+            locationInfo.innerHTML = '<span class="spinner"></span><span class="loading">Getting location...</span>';
+            
+            // High accuracy options for better location detection
+            const options = {
+                enableHighAccuracy: true,  // Use GPS if available
+                timeout: 10000,             // 10 second timeout
+                maximumAge: 0               // Don't use cached position
+            };
+            
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    currentLat = position.coords.latitude;
+                    currentLon = position.coords.longitude;
+                    const accuracy = position.coords.accuracy;
+                    
+                    // Show accuracy info
+                    let accuracyText = '';
+                    if (accuracy < 10) {
+                        accuracyText = '🎯 High Accuracy';
+                    } else if (accuracy < 50) {
+                        accuracyText = '✅ Good Accuracy';
+                    } else if (accuracy < 100) {
+                        accuracyText = '⚠️ Fair Accuracy';
+                    } else {
+                        accuracyText = '⚡ Low Accuracy';
+                    }
+                    
+                    locationInfo.innerHTML = `✅ <strong>Location Found</strong><br><span style="font-size: 12px;">Lat: ${currentLat.toFixed(4)}, Lon: ${currentLon.toFixed(4)}<br>${accuracyText} (±${accuracy.toFixed(0)}m)</span>`;
+                },
+                (error) => {
+                    let errorMsg = '❌ Unable to get location';
+                    
+                    // Provide specific error messages
+                    if (error.code === error.PERMISSION_DENIED) {
+                        errorMsg = '❌ Location permission denied. Enable in settings.';
+                    } else if (error.code === error.POSITION_UNAVAILABLE) {
+                        errorMsg = '❌ Location unavailable. Check GPS/WiFi.';
+                    } else if (error.code === error.TIMEOUT) {
+                        errorMsg = '❌ Location timeout. Try again.';
+                    }
+                    
+                    locationInfo.textContent = errorMsg;
+                },
+                options
+            );
+        }
+
+        // Multi-source Geocoding: HERE Maps → OSM → Yandex (with fallbacks)
+        const input = document.getElementById('destinationPlace');
+        const suggestionsDiv = document.getElementById('suggestions');
+        
+        // HERE Maps API Key - Replace with your own
+        const HERE_API_KEY = 'YOUR_HERE_API_KEY_HERE';
+
+        input.addEventListener('input', function(e) {
+            const value = e.target.value;
+            clearTimeout(debounceTimer);
+            
+            if (value.length < 2) {
+                suggestionsDiv.style.display = 'none';
+                return;
+            }
+
+            debounceTimer = setTimeout(() => {
+                // Try HERE Maps first
+                if (HERE_API_KEY !== 'YOUR_HERE_API_KEY_HERE') {
+                    fetchHEREMaps(value);
+                } else {
+                    // Fallback to OSM if no HERE key
+                    fetchOpenStreetMap(value);
+                }
+            }, 300);
+        });
+
+        // HERE Maps Geocoding
+        function fetchHEREMaps(query) {
+            fetch(`https://geocode.search.hereapi.com/v1/geocode?q=${encodeURIComponent(query)}&in=countryCode:LKA&limit=8&apikey=${HERE_API_KEY}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.items && data.items.length > 0) {
+                        displayResults(data.items.map(item => ({
+                            name: item.title,
+                            lat: item.position.lat,
+                            lon: item.position.lng,
+                            source: 'HERE'
+                        })));
+                    } else {
+                        // Fallback to OSM
+                        fetchOpenStreetMap(query);
+                    }
+                })
+                .catch(error => {
+                    console.log('HERE Maps error, trying OSM:', error);
+                    fetchOpenStreetMap(query);
+                });
+        }
+
+        // OpenStreetMap (Nominatim) Geocoding
+        function fetchOpenStreetMap(query) {
+            fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=8&countrycodes=lk&addressdetails=1&featuretype=settlement,city,town,village&extratags=1`, {
+                headers: {
+                    'Accept-Language': 'en',
+                    'User-Agent': 'DistanceCalculatorApp'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.length > 0) {
+                        displayResults(data.map(place => ({
+                            name: place.display_name.split(',')[0] + 
+                                (place.address?.city ? ', ' + place.address.city : '') +
+                                (place.address?.district ? ', ' + place.address.district : ''),
+                            lat: parseFloat(place.lat),
+                            lon: parseFloat(place.lon),
+                            source: 'OSM'
+                        })));
+                    } else {
+                        // Fallback to Yandex
+                        fetchYandexMaps(query);
+                    }
+                })
+                .catch(error => {
+                    console.log('OSM error, trying Yandex:', error);
+                    fetchYandexMaps(query);
+                });
+        }
+
+        // Yandex Maps Geocoding
+        function fetchYandexMaps(query) {
+            fetch(`https://geocode-maps.yandex.ru/1.x/?apikey=40d1649f-0493-4b70-98ba-98533de7710c&geocode=${encodeURIComponent(query + ', Sri Lanka')}&format=json&lang=en&results=8`, {
+                headers: {'Accept-Language': 'en'}
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const geoObjects = data.response.GeoObjectCollection.featureMember;
+                    if (geoObjects && geoObjects.length > 0) {
+                        displayResults(geoObjects.map(obj => {
+                            const geoObject = obj.GeoObject;
+                            const point = geoObject.Point.pos.split(' ');
+                            return {
+                                name: geoObject.metaDataProperty.GeocoderMetaData.text,
+                                lat: parseFloat(point[1]),
+                                lon: parseFloat(point[0]),
+                                source: 'Yandex'
+                            };
+                        }));
+                    } else {
+                        suggestionsDiv.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('All geocoding sources failed:', error);
+                    suggestionsDiv.style.display = 'none';
+                });
+        }
+
+        // Display results from any source
+        function displayResults(results) {
+            suggestionsDiv.innerHTML = '';
+            results.forEach(result => {
+                const div = document.createElement('div');
+                div.textContent = result.name.substring(0, 60);
+                div.title = `${result.source}`;
+                div.onclick = () => {
+                    input.value = result.name;
+                    suggestionsDiv.style.display = 'none';
+                    input.dataset.lat = result.lat;
+                    input.dataset.lon = result.lon;
+                };
+                suggestionsDiv.appendChild(div);
+            });
+            suggestionsDiv.style.display = 'block';
+        }
+
+        document.addEventListener('click', function(e) {
+            if (e.target !== input) {
+                suggestionsDiv.style.display = 'none';
+            }
+        });
+
+        let distanceCards = [null, null]; // Store data for 2 cards
+        let nextCardIndex = 0; // Track which card to fill next
+
+        // Load saved distance cards from localStorage on page load
+        function loadSavedDistanceCards() {
+            const saved = localStorage.getItem('distanceCards');
+            if (saved) {
+                try {
+                    distanceCards = JSON.parse(saved);
+                    // Restore the cards to the UI
+                    distanceCards.forEach((card, index) => {
+                        if (card) {
+                            const cardNum = index + 1;
+                            document.getElementById(`distanceCard${cardNum}`).classList.add('show');
+                            document.getElementById(`distanceValue${cardNum}`).textContent = card.distance + ' km';
+                            document.getElementById(`distanceInfo${cardNum}`).innerHTML = `<strong>${card.displayName.substring(0, 35)}</strong><br><span style="font-size: 10px;">Lat: ${card.destLat.toFixed(4)}, Lon: ${card.destLon.toFixed(4)}</span>`;
+                        }
+                    });
+                } catch (e) {
+                    console.log('Error loading saved cards:', e);
+                }
+            }
+        }
+
+        // Save distance cards to localStorage
+        function saveDistanceCards() {
+            const cardsToSave = distanceCards.map(card => {
+                if (card) {
+                    return {
+                        ...card,
+                        distance: (haversineDistance(currentLat || 0, currentLon || 0, card.destLat, card.destLon)).toFixed(2)
+                    };
+                }
+                return null;
+            });
+            localStorage.setItem('distanceCards', JSON.stringify(cardsToSave));
+        }
+
+        function calculateDistance() {
+            const placeName = input.value.trim();
+
+            if (!placeName) {
+                alert('Please enter a destination');
+                return;
+            }
+
+            // Check if we already have 2 cards, if so, reuse the first one
+            if (nextCardIndex >= 2) {
+                nextCardIndex = 0;
+            }
+
+            const cardNum = nextCardIndex + 1;
+            const distanceCard = document.getElementById(`distanceCard${cardNum}`);
+            document.getElementById(`distanceValue${cardNum}`).innerHTML = '<span class="spinner"></span>';
+            document.getElementById(`distanceInfo${cardNum}`).innerHTML = '<span class="loading">Getting location...</span>';
+            distanceCard.classList.add('show');
+
+            // Get current location
+            if (!navigator.geolocation) {
+                document.getElementById(`distanceInfo${cardNum}`).innerHTML = '<span class="error-text">❌ Geolocation not supported</span>';
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    currentLat = position.coords.latitude;
+                    currentLon = position.coords.longitude;
+                    calculateDistanceWithLocation(placeName, cardNum);
+                    nextCardIndex = (nextCardIndex + 1) % 2; // Cycle through cards
+                },
+                (error) => {
+                    document.getElementById(`distanceInfo${cardNum}`).innerHTML = '<span class="error-text">❌ Unable to get location</span>';
+                }
+            );
+        }
+
+        function calculateDistanceWithLocation(placeName, cardNum) {
+            document.getElementById(`distanceValue${cardNum}`).innerHTML = '<span class="spinner"></span>';
+            document.getElementById(`distanceInfo${cardNum}`).innerHTML = '<span class="loading">Calculating...</span>';
+
+            if (input.dataset.lat && input.dataset.lon) {
+                displayDistance(parseFloat(input.dataset.lat), parseFloat(input.dataset.lon), placeName, cardNum);
+            } else {
+                fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(placeName)}&format=json&limit=1&countrycodes=lk&addressdetails=0`, {
+                    headers: {'Accept-Language': 'en'}
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data || data.length === 0) {
+                            document.getElementById(`distanceInfo${cardNum}`).innerHTML = '<span class="error-text">❌ Place not found</span>';
+                            return;
+                        }
+                        const place = data[0];
+                        displayDistance(parseFloat(place.lat), parseFloat(place.lon), place.display_name, cardNum);
+                    })
+                    .catch(error => {
+                        document.getElementById(`distanceInfo${cardNum}`).innerHTML = '<span class="error-text">❌ Error finding location</span>';
+                    });
+            }
+        }
+
+        function displayDistance(destLat, destLon, displayName, cardNum) {
+            const distance = haversineDistance(currentLat, currentLon, destLat, destLon);
+            const displayDist = distance.toFixed(2);
+
+            distanceCards[cardNum - 1] = { destLat, destLon, displayName, distance: displayDist };
+            
+            document.getElementById(`distanceValue${cardNum}`).textContent = displayDist + ' km';
+            document.getElementById(`distanceInfo${cardNum}`).innerHTML = `<strong>${displayName.substring(0, 35)}</strong><br><span style="font-size: 10px;">Lat: ${destLat.toFixed(4)}, Lon: ${destLon.toFixed(4)}</span>`;
+            
+            // Save to localStorage
+            saveDistanceCards();
+        }
+
+        function closeDistanceCard(cardNum) {
+            document.getElementById(`distanceCard${cardNum}`).classList.remove('show');
+            distanceCards[cardNum - 1] = null;
+            saveDistanceCards();
+        }
+
+        function recalculateDistance(cardNum) {
+            if (distanceCards[cardNum - 1]) {
+                const { destLat, destLon, displayName } = distanceCards[cardNum - 1];
+                
+                if (!navigator.geolocation) return;
+                
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        currentLat = position.coords.latitude;
+                        currentLon = position.coords.longitude;
+                        displayDistance(destLat, destLon, displayName, cardNum);
+                    }
+                );
+            }
+        }
+
+        function haversineDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = 
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        // Friends functionality
+        function addFriend() {
+            const nameInput = document.getElementById('friendName');
+            const phoneInput = document.getElementById('friendPhone');
+            const name = nameInput.value.trim();
+            const phone = phoneInput.value.trim();
+
+            if (!name || !phone) {
+                alert('Enter both name and phone number');
+                return;
+            }
+
+            const friend = {
+                id: Date.now(),
+                name: name,
+                phone: phone,
+                avatar: name.substring(0, 2).toUpperCase()
+            };
+
+            friends.push(friend);
+            localStorage.setItem('friends', JSON.stringify(friends));
+            nameInput.value = '';
+            phoneInput.value = '';
+            renderFriends();
+        }
+
+        function removeFriend(id) {
+            friends = friends.filter(f => f.id !== id);
+            localStorage.setItem('friends', JSON.stringify(friends));
+            renderFriends();
+        }
+
+        function callFriend(phone) {
+            window.location.href = `tel:${phone}`;
+        }
+
+        function renderFriends() {
+            const grid = document.getElementById('friendsGrid');
+            
+            if (friends.length === 0) {
+                grid.innerHTML = '<div class="empty-friends">No friends yet</div>';
+                return;
+            }
+
+            grid.innerHTML = friends.map(friend => `
+                <div class="friend-card" onclick="callFriend('${friend.phone}')">
+                    <button class="friend-remove" onclick="event.stopPropagation(); removeFriend(${friend.id})">✕</button>
+                    <div class="friend-avatar">${friend.avatar}</div>
+                    <div class="friend-name">${friend.name}</div>
+                    <div class="friend-phone">${friend.phone}</div>
+                </div>
+            `).join('');
+        }
+
+        renderFriends();
+
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') calculateDistance();
+        });
+
+        // Tasks functionality
+        function addTask() {
+            const taskInput = document.getElementById('taskInput');
+            const taskText = taskInput.value.trim();
+
+            if (!taskText) {
+                alert('Enter a task');
+                return;
+            }
+
+            const task = {
+                id: Date.now(),
+                text: taskText,
+                done: false
+            };
+
+            tasks.push(task);
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            taskInput.value = '';
+            renderTasks();
+        }
+
+        function removeTask(id) {
+            tasks = tasks.filter(t => t.id !== id);
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            renderTasks();
+        }
+
+        function toggleTaskDone(id) {
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                task.done = !task.done;
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+                renderTasks();
+            }
+        }
+
+        function renderTasks() {
+            const tasksList = document.getElementById('tasksList');
+            
+            if (tasks.length === 0) {
+                tasksList.innerHTML = '<div class="empty-tasks">No tasks yet</div>';
+                return;
+            }
+
+            tasksList.innerHTML = tasks.map(task => `
+                <div class="task-item ${task.done ? 'done' : ''}">
+                    <input type="checkbox" class="task-checkbox" ${task.done ? 'checked' : ''} onchange="toggleTaskDone(${task.id})">
+                    <div class="task-text">${task.text}</div>
+                    <button class="task-remove" onclick="removeTask(${task.id})">✕</button>
+                </div>
+            `).join('');
+        }
+
+        renderTasks();
+
+        document.getElementById('taskInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') addTask();
+        });
+
+        // Get user info and setup profile
+        function setupProfileAvatar() {
+            const currentUser = localStorage.getItem('currentUser');
+            const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers')) || [];
+            const user = registeredUsers.find(u => u.username === currentUser);
+            
+            if (user && currentUser) {
+                const initials = currentUser.substring(0, 2).toUpperCase();
+                document.getElementById('profileAvatar').textContent = initials;
+                document.getElementById('menuAvatar').textContent = initials;
+                document.getElementById('menuUsername').textContent = currentUser;
+                document.getElementById('menuEmail').textContent = user.email || 'user@app.com';
+            }
+        }
+
+        setupProfileAvatar();
+        loadSavedDistanceCards();
+
+        // Toggle menu popup
+        function toggleMenuPopup() {
+            const overlay = document.getElementById('menuOverlay');
+            const popup = document.getElementById('menuPopup');
+            
+            overlay.classList.toggle('active');
+            popup.classList.toggle('active');
+        }
+
+        // Close menu popup
+        function closeMenuPopup() {
+            const overlay = document.getElementById('menuOverlay');
+            const popup = document.getElementById('menuPopup');
+            
+            overlay.classList.remove('active');
+            popup.classList.remove('active');
+        }
+
+        // Navigate to chat
+        function navigateToChat() {
+            window.location.href = 'chat.html';
+        }
+
+        // Logout functionality
+        function handleLogout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'landing.html';
+        }
+    </script>
+</body>
+</html>
